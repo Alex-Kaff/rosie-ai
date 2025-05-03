@@ -1,0 +1,95 @@
+{
+  "name": "rosie",
+  "version": "1.0.0",
+  "main": "dist/main/main.js",
+  "scripts": {
+    "clean": "rimraf dist",
+    "build:main": "tsc",
+    "build:renderer": "webpack --config webpack.config.js",
+    "build": "npm run clean && npm run build:main && npm run build:renderer",
+    "build:prod": "cross-env NODE_ENV=production npm run clean && npm run build:main && cross-env NODE_ENV=production webpack --config webpack.config.js",
+    "start": "electron-forge start",
+    "dev:renderer": "webpack serve --config webpack.config.js",
+    "dev:main": "tsc -w",
+    "dev:electron": "cross-env NODE_ENV=development electron .",
+    "dev": "npm run clean && npm run build:main && concurrently \"npm run dev:renderer\" \"npm run dev:main\" \"wait-on http://localhost:8081 && npm run dev:electron\"",
+    "debug": "npm run clean && npm run build:main && npm run build:renderer && cross-env NODE_ENV=development electron .",
+    "pack": "npm run build:prod && electron-builder --dir",
+    "build:exe": "npm run build:prod && electron-builder build --win --x64 --config.win.artifactName=\"${productName}.exe\" --config.win.target=portable --config.extraMetadata.main=dist/main/main.js",
+    "create-exe": "node create-portable-exe.js",
+    "package": "npm run build:prod && electron-forge package",
+    "make": "npm run build:prod && electron-forge make"
+  },
+  "keywords": [],
+  "author": "Rosie Developer",
+  "license": "ISC",
+  "description": "Rosie AI Assistant",
+  "build": {
+    "appId": "com.rosie.app",
+    "productName": "Rosie",
+    "asar": true,
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "portable"
+      ],
+      "icon": "src/renderer/assets/rosie-sitting.png"
+    },
+    "artifactName": "${productName}.${ext}",
+    "forceCodeSigning": false
+  },
+  "devDependencies": {
+    "@babel/core": "^7.27.1",
+    "@babel/preset-react": "^7.27.1",
+    "@electron-forge/cli": "^7.8.0",
+    "@electron-forge/maker-deb": "^7.8.0",
+    "@electron-forge/maker-rpm": "^7.8.0",
+    "@electron-forge/maker-squirrel": "^7.8.0",
+    "@electron-forge/maker-zip": "^7.8.0",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.8.0",
+    "@electron-forge/plugin-fuses": "^7.8.0",
+    "@electron/fuses": "^1.8.0",
+    "@types/node": "^22.15.2",
+    "@types/react": "^19.1.2",
+    "@types/react-dom": "^19.1.2",
+    "autoprefixer": "^10.4.21",
+    "babel-loader": "^10.0.0",
+    "concurrently": "^9.1.2",
+    "cross-env": "^7.0.3",
+    "css-loader": "^7.1.2",
+    "electron": "^35.2.1",
+    "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^5.6.3",
+    "postcss": "^8.5.3",
+    "postcss-loader": "^8.1.1",
+    "rimraf": "^6.0.1",
+    "style-loader": "^4.0.0",
+    "tailwindcss": "^3.3.3",
+    "ts-loader": "^9.5.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3",
+    "wait-on": "^8.0.3",
+    "webpack": "^5.99.7",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.1"
+  },
+  "dependencies": {
+    "@types/react-syntax-highlighter": "^15.5.13",
+    "@types/uuid": "^10.0.0",
+    "dotenv": "^16.5.0",
+    "electron-squirrel-startup": "^1.0.1",
+    "openai": "^4.96.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-markdown": "^10.1.0",
+    "react-syntax-highlighter": "^15.6.1",
+    "uuid": "^11.1.0"
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+}
